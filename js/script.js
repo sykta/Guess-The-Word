@@ -1,6 +1,6 @@
-const guessedLetters = document.querySelector(".guessed-letters");
+const guessedLettersElement = document.querySelector(".guessed-letters");
 // console.log(guessedLetters.outerHTML)
-const guess = document.querySelector(".guess");
+const guessBtn = document.querySelector(".guess");
 // console.log(guess.outerHTML)
 const input = document.querySelector(".letter");
 // console.log(input.outerHTML)
@@ -15,22 +15,64 @@ const message = document.querySelector(".message");
 const playAgainBtn = document.querySelector(".play-again");
 // console.log(playAgainBtn);
 
-const word = "magnolia";
+const word = "magnolia"; // Starting word to test the game
+const guessedLetters = [];
 
+// Display circle symbol as placeholder for the chosen word's letters
 const updateWordInProgress = function () {
     const placeholders = [];
     for (const character of word) {
         console.log(character);
         placeholders.push("●");
     }
-    wordInProgress.innerText = placeholders.join("");
-}
-
+    wordInProgress.innerText = placeholders.join(""); //  Joins back to a string becoming the inner text of the “word-in-progress” element 
+};
 updateWordInProgress(word);
 
-guess.onclick = function (e) {
-    e.preventDefault();
-    let inputChar = input.value;
-    console.log(inputChar)
-    input.value = "";
-}
+// "Guess" button click function
+guessBtn.onclick = function (e) {
+    e.preventDefault(); // Prevents behavior of clicking a button, form submitting, and then reloading the page 
+    message.innerText = ""; // Empties the text of "message" element
+    // Call check input function
+    
+    let inputChar = input.value; // Captures value of input
+    // console.log(inputChar)
+    const inputCheckCall = validate(inputChar);
+    // console.log(inputCheckCall); 
+
+    if (inputCheckCall) {
+        makeGuess(inputChar);
+    }
+
+    input.value = ""; //  Empties the value of the input
+};
+
+// Function to check input
+const validate = function (input) {
+    const acceptedLetter = /[a-zA-Z]/; // Regular expression to ensure letter input type
+    // inputValue = ;
+    if (input.length === 0) {
+        // Empty input?
+        message.innerText = "Please enter a letter";
+    } else if (input.length > 1 ) {
+        // Input character > 1?
+        message.innerText = "Please enter a single letter";
+    } else if (!input.match(acceptedLetter)) {
+        // Input character not within defined range?
+        message.innerText = "Please enter a letter between A-Z";
+    } else {
+        // Correct input state
+        return input;
+    }
+};
+
+// Function to capture input
+const makeGuess = function (guess) {
+    guess = guess.toUpperCase();
+    if (guessedLetters.includes(guess)) {
+        message.innerText = "You already guessed that letter. Try another!"
+    } else {
+        guessedLetters.push(guess);
+        console.log(guessedLetters)
+    }
+};
