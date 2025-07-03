@@ -1,23 +1,17 @@
 const guessedLettersElement = document.querySelector(".guessed-letters");
-// console.log(guessedLetters.outerHTML)
 const guessBtn = document.querySelector(".guess");
-// console.log(guess.outerHTML)
 const input = document.querySelector(".letter");
-// console.log(input.outerHTML)
 const wordInProgress = document.querySelector(".word-in-progress");
-// console.log(wordInProgress.outerHTML)
 const remaining = document.querySelector(".remaining");
-// console.log(remaining.outerHTML)
 const remainingGuessCount = document.querySelector(".remaining span");
-// console.log(remainingGuesses.outerHTML)
 const message = document.querySelector(".message");
-// console.log(message.outerHTML)
 const playAgainBtn = document.querySelector(".play-again");
-// console.log(playAgainBtn);
+
 
 let word = "magnolia"; // Starting word to test the game
-const guessedLetters = [];
+let guessedLetters = [];
 let remainingGuesses = 8; // Max # of guesses allowed
+
 
 // Function to fetch data & random word
 const getWord = async function () {
@@ -26,11 +20,12 @@ const getWord = async function () {
     // console.log(words);
     const wordArray = words.split("\n");
     // console.log(wordArray);
-    const randomIndex = Math.floor(Math.random()*wordArray.length);
+    const randomIndex = Math.floor(Math.random() * wordArray.length);
     word = wordArray[randomIndex].trim();
     updateWordInProgress(word);
 }
 getWord();
+
 
 // Display circle symbol as placeholder for the chosen word's letters
 const updateWordInProgress = function () {
@@ -43,12 +38,13 @@ const updateWordInProgress = function () {
 };
 updateWordInProgress(word);
 
+
 // "Guess" button click function
 guessBtn.onclick = function (e) {
     e.preventDefault(); // Prevents behavior of clicking a button, form submitting, and then reloading the page 
     message.innerText = ""; // Empties the text of "message" element
-    // Call check input function
 
+    // Call check input function
     let inputChar = input.value; // Captures value of input
     // console.log(inputChar)
     const inputCheckCall = validate(inputChar);
@@ -60,6 +56,7 @@ guessBtn.onclick = function (e) {
 
     input.value = ""; //  Empties the value of the input
 };
+
 
 // Function to check input
 const validate = function (input) {
@@ -80,6 +77,7 @@ const validate = function (input) {
     }
 };
 
+
 // Function to capture input
 const makeGuess = function (guess) {
     guess = guess.toUpperCase();
@@ -94,6 +92,7 @@ const makeGuess = function (guess) {
     correctWordInProgress(guessedLetters);
 };
 
+
 // Function to display guessed letter
 const showGuess = function () {
     guessedLettersElement.innerHTML = ""; // Clears existing items from ".guessed-letters" ul element
@@ -103,6 +102,7 @@ const showGuess = function () {
         guessedLettersElement.append(li); // Appends the new list item to unordered list
     }
 }
+
 
 //Function to update the word in progress when guessed correctly; replaces circle symbol
 const correctWordInProgress = function (guessedLetters) {
@@ -120,6 +120,7 @@ const correctWordInProgress = function (guessedLetters) {
     checkWin();
 };
 
+
 // Function to count guesses remaining
 const guessCount = function (guess) {
     guess = guess.toUpperCase();
@@ -131,9 +132,9 @@ const guessCount = function (guess) {
     } else {
         message.innerText = "Good guess! :D"
     }
-
     if (remainingGuesses === 0) {
-        message.innerHTML = `Game Over. The correct word is ${word}.`;
+        message.innerHTML = `Game Over. The correct word is <span class="highlight">${word}</span>.`;
+        startOver();
     } else if (remainingGuesses === 1) {
         remainingGuessCount.innerText = `${remainingGuesses} guess`;
     } else {
@@ -141,10 +142,38 @@ const guessCount = function (guess) {
     }
 };
 
+
 // Function to check correct word and win game!
 const checkWin = function () {
     if (word.toUpperCase() === wordInProgress.innerText) {
         message.classList.add("win"); // Adds "win" class to ".message" element
         message.innerHTML = '<p class="highlight">You guessed correct the word! Congrats!</p>'; // updates paragraph contents
+        startOver();
     }
+
+};
+
+
+// Function to hide/show elements
+function startOver() {
+    guessBtn.style.display = "none";
+    remaining.style.display = "none";
+    guessedLettersElement.style.display = "none";
+    playAgainBtn.style.display = "block";
+};
+
+
+// "Play Again" click function
+playAgainBtn.onclick = function () {
+    message.classList.remove("win");
+    message.innerText = "";
+    guessedLettersElement.innerText = "";
+    remainingGuesses = 8;
+    remainingGuessCount.innerText = `${remainingGuesses} guesses`;
+    guessedLetters = [];
+    guessBtn.style.display = "block";
+    remaining.style.display = "block";
+    guessedLettersElement.style.display = "block";
+    playAgainBtn.style.display = "none";
+    getWord();
 };
