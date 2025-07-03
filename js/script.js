@@ -86,7 +86,7 @@ const makeGuess = function (guess) {
     } else {
         guessCount(guess);
         guessedLetters.push(guess);
-        console.log(guessedLetters)
+        // console.log(guessedLetters)
         showGuess();
     }
     correctWordInProgress(guessedLetters);
